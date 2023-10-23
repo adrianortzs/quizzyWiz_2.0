@@ -1,4 +1,4 @@
-ocument.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
   // BOTON EMPEZAR
   const startButton = document.getElementById("startButton");
 
@@ -52,11 +52,11 @@ ocument.addEventListener("DOMContentLoaded", function () {
     nextButton.style.display = "block";
   });
 
-  // FUNCION PARA MOSTRAR LAS PREGUNTAS
+  // VALIDACIÓN
   nextButton.addEventListener("click", function () {
-    const typeAnswer = document.querySelectorAll('input[type="radio"]:checked');
-    let correctResponses = [];
-    let incorrectResponses = [];
+  const typeAnswer = document.querySelectorAll('input[type="radio"]:checked');
+  let correctResponses = [];
+  let incorrectResponses = [];
 
     if (typeAnswer.length === 1) {
       const selectedInput = typeAnswer[0];
@@ -65,33 +65,54 @@ ocument.addEventListener("DOMContentLoaded", function () {
       const questionsData = getQuestionsFromLocalStorage();
       const currentQuestion = questionsData[questionIndex];
 
-      if (answer == currentQuestion.correctAnswer) {
+      if (answer === currentQuestion.correctAnswer) { 
         selectedInput.parentNode.classList.add("correct");
-        correctResponses.push(currentQuestion);
+        correctResponses.push(answer);
+        score += 1;
       } else {
         selectedInput.parentNode.classList.add("incorrect");
-        incorrectResponses.push(currentQuestion);
-      }
-      if (correctResponses == answer) {
-        score += 1;
+        incorrectResponses.push(answer);
       }
 
       console.log(score);
 
       questionIndex++;
+      
 
       if (questionIndex < questionsData.length) {
         showQuestion(questionsData, questionIndex);
       } else {
         const section = document.getElementById("question_quiz");
         section.innerHTML = "¡HAS TERMINADO LAS PREGUNTAS DE QUIZZYWIZ!";
-
         // OCULTAR BOTÓN NEXT
         nextButton.style.display = "none";
+
+        //Imprimir resultado en pantalla
+
+        if (questionIndex === questionsData.length) {
+          const totalQuestions = questionsData.length;
+          const percentage = (correctResponses.length / totalQuestions) * 100;
+          const resultQuiz = document.getElementById("results");
+          //revisar el lugar en donde se pinta porq se pinta
+          resultQuiz.innerHTML = `Has acertado el ${percentage}% de las preguntas`;
+        }
+        
+        //GRÁFICA
+
+        new Chartist.Bar('#chart2',  {
+        labels: [...user],             
+        series: [score]
+        })
       }
     } else {
       // SI NO HA SIDO SELECCIONADA NINGUNA RESPUESTA
       alert("Tienes que elegir alguna respuesta");
+    }
+    if (questionIndex === questionsData.length) {
+      // NOTA RESULTADO
+      const totalQuestions = questionsData.length;
+      const percentage = (correctResponses.length / totalQuestions) * 100;
+      return percentage
     }
   });
 });
@@ -100,13 +121,16 @@ ocument.addEventListener("DOMContentLoaded", function () {
 function showQuestion(questions, index) {
   let section = document.getElementById("question_quiz");
   let question = questions[index];
+  //Respuestas orden aleatorio
+  let mixedAnswers = [question.correctAnswer, ...question.incorrectAnswers];
+  mixedAnswers.sort(() => Math.random() - 0.5);
 
   let arrTemplateString = `
     <h1 class="pregunta">${question.question}</h1>
-    <label><input type="radio" value="${question.correctAnswer}" name="res" required>${question.correctAnswer}</label>
-    <label><input type="radio" value="${question.incorrectAnswers[0]}" name="res" required>${question.incorrectAnswers[0]}</label>
-    <label><input type="radio" value="${question.incorrectAnswers[1]}" name="res" required>${question.incorrectAnswers[1]}</label>
-    <label><input type="radio" value="${question.incorrectAnswers[2]}" name="res" required>${question.incorrectAnswers[2]}</label>
+    <label><input type="radio" value="${mixedAnswers[0]}" name="res" required>${mixedAnswers[0]}</label>
+    <label><input type="radio" value="${mixedAnswers[1]}" name="res" required>${mixedAnswers[1]}</label>
+    <label><input type="radio" value="${mixedAnswers[2]}" name="res" required>${mixedAnswers[2]}</label>
+    <label><input type="radio" value="${mixedAnswers[3]}" name="res" required>${mixedAnswers[3]}</label>
   `;
   section.innerHTML = arrTemplateString;
 }
@@ -119,13 +143,14 @@ function getQuestionsFromLocalStorage() {
   return null;
 }
 
-// function answersFromLocalStorage() {
-//   let answerData = localStorage.getItem("questionsData");
-//   if (answerData) {
-//     return JSON.parse(answerData);
-//   }
-//   return null;
-// }
+function answersFromLocalStorage() {
+  let answers = localStorage.getItem("answers");
+  if (answers) {
+    return JSON.parse(answers);
+  }
+  return null;
+}
+
 
 // ***** CONSEGUIR DEJAR SELECIONADA UNA RESPUESTA CON EL COLOR ****** //
 
@@ -162,7 +187,6 @@ function getQuestionsFromLocalStorage() {
 // }
 // ***** CONSEGUIR DEJAR SELECIONADA UNA RESPUESTA CON EL COLOR ****** //
 
-// *********    FALTA VERIFICAR LAS RESPUESTAS ************ //
 // FUNCIONALIDAD LOGIN
 
 const firebaseConfig = {
@@ -220,7 +244,7 @@ const signInUser = (email, password) => {
       let user = userCredential.user;
       alert(`Se ha logueado correctamente ${user.email}`);
       console.log("USER", user);
-      window.location.href = "./question.html";
+      window.location.href = "./quiz.html";
     })
     .catch((error) => {
       let errorCode = error.code;
