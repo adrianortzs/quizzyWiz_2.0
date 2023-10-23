@@ -17,6 +17,8 @@ document.addEventListener("DOMContentLoaded", function () {
       );
       let data = await response.json();
       let objQuestions = data.results;
+      // let allAnswers = [getInfo.correct_answer,getInfo.incorrect_answers];
+      // allAnswers.sort(function() { return Math.random() - 0.5 });
 
       let getInfo = objQuestions.map((question) => ({
         question: question.question,
@@ -86,7 +88,29 @@ document.addEventListener("DOMContentLoaded", function () {
       alert("Tienes que elegir alguna respuesta");
     }
   });
+     // VALIDACIÓN
+    questionContainer.addEventListener("submit", function(event) {
+    event.preventDefault();
 
+    let checkedInputs = []
+    for (let i = 0; i < typeAnswer.length; i++) {
+        if (typeAnswer[i].checked) {
+            checkedInputs.push(typeAnswer[i])
+        }  
+    }
+    let correctAnswer = []
+    for (let i=0; i<checkedInputs.length; i++){
+        let answer = event.target[`res${i + 1}`][`value`];
+        console.log(answer)
+        correctAnswer.push(question.correctAnswer);
+
+        if (correctAnswer[i] === answer){
+            score += 1;
+        }
+
+        console.log(score);
+    }
+    })
   // MOSTRAR LAS PREGUNTAS Y RESPUESTAS
   function showQuestion(questions, index) {
     let section = document.getElementById("question_quiz");
