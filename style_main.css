@@ -2,7 +2,7 @@
 body {
   font-family: Arial, sans-serif;
   text-align: center;
-  background-image: url("./fondo.gif");
+  background-image: url("../imageMain/movinu.gif");
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -31,7 +31,6 @@ main {
 
 
 form {
-  background-image: url('../images/fondo.JPG');
   background-position: 100px;
   padding: 1.2em; 
   color: black;
