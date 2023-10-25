@@ -191,7 +191,22 @@ const signInUser = (email, password) => {
     });
 };
 
-document.getElementById("form1").addEventListener("submit", function (event) {
+document.getElementById("form2").addEventListener("submit", function (event) {
+  event.preventDefault();
+  let email = event.target.elements.email2.value;
+  let pass = event.target.elements.pass3.value;
+  signInUser(email, pass);
+});
+
+firebase.auth().onAuthStateChanged(function (user) {
+  if (user) {
+    console.log(`Está en el sistema:${user.email} ${user.uid}`);
+  } else {
+    console.log("No hay usuarios en el sistema");
+  }
+});
+
+document.getElementById("form1").addEventListener("click", function (event) {
   event.preventDefault();
 
   if (
@@ -201,31 +216,31 @@ document.getElementById("form1").addEventListener("submit", function (event) {
   ) {
     var email = event.target.elements.email.value;
   } else {
-    alert("prueba con otra dirección email,formato no válido");
+    alert("Pruebe con otra dirección email,formato no válido");
   }
 
-  if (
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})/.test(
-      event.target.elements.pass.value
-    )
-  ) {
+  if (/^(?=.*[A-Z])(?=.*\d).{6,}$/.test(event.target.elements.pass.value)) {
     var pass = event.target.elements.pass.value;
-    //contraseña Caracola1!
   } else {
-    alert("prueba con otra contraseña,formato no válido");
+    alert(
+      "La contraseña debe cumplir con los siguientes requisitos:\n" +
+        "- Al menos una letra mayúscula\n" +
+        "- Al menos un número\n" +
+        "- Longitud mínima de 6 caracteres"
+    );
   }
 
-  if (
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})/.test(
-      event.target.elements.pass2.value
-    )
-  ) {
+  if (/^\d.*(?=.{6,})/.test(event.target.elements.pass2.value)) {
     var pass2 = event.target.elements.pass2.value;
+  } else {
+    alert("Contraseña incorrecta");
   }
 
-  pass === pass2
-    ? signUpUser(email, pass)
-    : alert("Las contraseñas no coinciden");
+  if (pass === pass2) {
+    signUpUser(email, pass);
+  } else {
+    alert("Las contraseñas no coinciden");
+  }
 });
 
 const signOut = () => {
@@ -256,5 +271,3 @@ firebase.auth().onAuthStateChanged(function (user) {
     console.log("No hay usuarios en el sistema");
   }
 });
-
-
