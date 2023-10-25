@@ -1,11 +1,10 @@
-
  /* ESTILOS QUIZ */
-body {
+ body {
     font-family: Arial, sans-serif;
     text-align: center;
     background-image: url("../imageMain/movinu.gif");
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: 2000px;
 }
 
 main {
@@ -21,7 +20,9 @@ main {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     text-align: center;
     border-radius: 10px;
+    border-color: #000;
     color: #fff;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.448);
 }
 
 #header_quiz {
@@ -36,21 +37,27 @@ main {
 }
 
 #startButton {
-    display: block;
+    display: inline-block;
     margin: 20px auto;
     padding: 10px;
     width: 200px;
     font-size: 16px;
     text-transform: uppercase;
-    color: black;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-    background-color: #ff14ff;
+    color: #ff14ff;
+    background-color: #000; 
+    border: 2px solid #ff14ff;
     border-radius: 5px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(255, 20, 255, 0.5), 0 0 20px rgba(255, 20, 255, 0.5); 
+    text-shadow: 0 0 10px rgba(255, 20, 255, 0.7);
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
 }
 
 #startButton:hover {
-    background-color: #e6f704;
+    background-color: #353136;
 }
+
 
 #playQuiz {
     padding: 16px;
@@ -58,8 +65,18 @@ main {
     text-transform: uppercase;
     text-align: center;
     border-radius: 5px;
+  
 }
-
+#playQuiz h3{
+    border: 2px solid #000000;
+    color:#14ffc4;
+    box-shadow: 0px 2px 4px rgba(150, 157, 155, 0.5);
+    padding: 15px 25px;
+    border-radius: 10px;
+    margin-top: 15px;
+    font-size: 18px;
+    min-height: 100px;
+}
 #question_quiz {
     display: block;
     padding: 20px;
@@ -69,47 +86,54 @@ main {
 
 .container_answ label {
     display: block;
-    padding: 10px;
-    margin-bottom: 10px;
-    font-size: 18px;
+    padding: 8px;
+    margin-bottom: 8px;
+    font-size: 14px;
 }
-.pregunta{
-    font-size: 20px;
-   color: #14ffc4;
 
-}
 label {
     display: block;
     text-align: center;
-    font-size: 18px;
+    font-size: 14px;
     padding: 10px;
     margin-bottom: 10px;
+    color: #ff14ff;
+    background-color: #000; 
+    border: 2px solid #ff14ff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(255, 20, 255, 0.5), 0 0 20px rgba(255, 20, 255, 0.5); 
+    text-shadow: 0 0 10px rgba(255, 20, 255, 0.7);
+    cursor: pointer;
+   
+    transition: transform 0.2s;
 }
 
 label:hover {
-    background-color: #ff14ff;
-    border-radius: 8px;
+    background-color: #533144a6; 
 }
 
 label input {
     display: none;
 }
 
-
 #nextButton {
-    display: none;
-    color: #fff;
-    background-color: #ff14ff;
-    padding: 10px 20px;
-    font-size: 22px;
-    border-radius: 5px;
+    width: 125px;
+    height: 35px;
+    font-size: 16px;
+    text-transform: uppercase;
+    font-weight: bolder;
+    color:black;
+    background-color:  #41f6d1;;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0px 2px 4px rgba(11, 186, 157, 0.5);
+    letter-spacing: 2px;
+    cursor: pointer;
 }
 
 #nextButton:hover {
-    background-color: #00eb00;
+    background-color: #007d7d; 
 }
-
-
 
 
 @media screen and (min-width: 768px) {
@@ -118,6 +142,9 @@ label input {
         margin: 30px auto;
         padding: 40px;
         font-size: 18px;
+        max-height: 800px;
+        min-height: 600px;
+       
     }
 
     #header_quiz {
@@ -135,22 +162,42 @@ label input {
     #playQuiz{
         width: 400px;
     }
+    
+    #question_quiz{
+        margin-right: 30px;
+
+    }
+    
+   
+    #playQuiz h3{
+     
+        font-size: 18px;
+      
+    
+    }
+    .container_answ{
+        margin-top: 10px;
+    }
 
     label {
-        
-        font-size: 22px;
+        font-size: 16px;
+        margin-bottom: 30px;
       
     }
     #nextButton {
+       display: block;
         font-size: 20px;
         
     }
-    .pregunta{
-        font-size: 30px;
-    
+    h1{
+        font-size: 50px;
     }
+   
 }
+
 
 @media screen and (max-width: 767px) {
  
 }
+
+
