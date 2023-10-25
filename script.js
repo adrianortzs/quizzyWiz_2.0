@@ -256,3 +256,5 @@ firebase.auth().onAuthStateChanged(function (user) {
     console.log("No hay usuarios en el sistema");
   }
 });
+
+
