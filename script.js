@@ -1,13 +1,45 @@
+
 document.addEventListener("DOMContentLoaded", function () {
   // BOTON EMPEZAR
   const startButton = document.getElementById("startButton");
 
   // BOTON SIGUIENTE PREGUNTA
+
+
+function showQuestion(questions, index) {
+  let section = document.querySelector("#question_quiz");
+  let question = questions[index];
+  if (question) {
+    let arrTemplateString = `
+      <h1 class="pregunta">${question.question}</h1>
+      <label><input type="radio" value="${question.correctAnswer}" name="res">${question.correctAnswer}</label>
+      <label><input type="radio" value="${question.incorrectAnswers[0]}" name="res">${question.incorrectAnswers[0]}</label>
+      <label><input type="radio" value="${question.incorrectAnswers[1]}" name="res">${question.incorrectAnswers[1]}</label>
+      <label><input type="radio" value="${question.incorrectAnswers[2]}" name="res">${question.incorrectAnswers[2]}</label>
+    `;
+    section.innerHTML = arrTemplateString;
+  } else {
+    section.innerHTML = "No hay más preguntas.";
+  }
+}
+
+
+// LLAMAR AL EVENTO DE LOS BOTONES EMPEZAR Y SIGUIENTE
+
+document.addEventListener("DOMContentLoaded", function () {
+  //BOTON EMPEZAR
+  const startButton = document.getElementById("startButton");
+
+  //BOTON SIGUIENTE PREGUNTA
+
   const nextButton = document.getElementById("nextButton");
 
   // REGISTRO DE LA PREGUNTA
   let questionIndex = 0;
+
   let score = 0;
+
+
 
   // Función INFORMACIÓN API y GUARDAR EN LOCALST
   async function getQuestionsApi() {
@@ -26,6 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Guarda preguntas en el LocalStorage
       localStorage.setItem("questionsData", JSON.stringify(getInfo));
+
       localStorage.setItem(
         "answerCorrect",
         JSON.stringify(getInfo.correctAnswer)
@@ -34,6 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
         "answerFalse",
         JSON.stringify(getInfo.incorrectAnswers)
       );
+
 
       // Mostrar la primera pregunta
       showQuestion(getInfo, questionIndex);
@@ -45,6 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // OCULTAR BOTÓN EMPEZAR, TITULO Y MENSAJE BIENVENIDA"
   startButton.addEventListener("click", function () {
     getQuestionsApi();
+
     // Ocultar botón start game
     startButton.style.display = "none";
 
@@ -94,11 +129,47 @@ document.addEventListener("DOMContentLoaded", function () {
       
 
       if (questionIndex < questionsData.length) {
+
+    // Ocultar el botón de inicio
+    startButton.style.display = "none";
+
+    // Ocultar el mensaje de bienvenida
+    const welcomeContainer = document.querySelector("#welcomeContainer");
+    welcomeContainer.style.display = "none";
+
+    // Mostrar el botón "Siguiente Pregunta"
+    nextButton.style.display = "block";
+  });
+
+  // FUNCION PARA MOSTAR LAS PREGUNTAS
+  nextButton.addEventListener("click", function () {
+    // COMPROBAR QUE ALGUNA OPCION HA SIDO SELECCIONADA
+    const typeAnswer = document.querySelectorAll('input[type="radio"]');
+
+    let answerSelected = false;
+    for (let i = 0; i < typeAnswer.length; i++) {
+      if (typeAnswer[i].checked) {
+        answerSelected = true;
+        break;
+      }
+    } // UNA VEZ COMPROBADO Y QUE SEA TRUE REALIZA EL SIGUIENTE CONDICIONAL
+    if (answerSelected) {
+      questionIndex++;
+
+      const questionsData = getQuestionsFromLocalStorage();
+
+      // CONDICIONAL PARA COMPROBAR SI HAY MÁS PREGUNTAS ALMACENADAS
+      if (questionsData && questionIndex < questionsData.length) {
+
         showQuestion(questionsData, questionIndex);
       } else {
         const section = document.getElementById("question_quiz");
         section.innerHTML = "¡HAS TERMINADO LAS PREGUNTAS DE QUIZZYWIZ!";
+
         // OCULTAR BOTÓN NEXT
+
+        // OCULTAMOS BOTÓN NEXT
+
         nextButton.style.display = "none";
 
         //Imprimir resultado en pantalla
@@ -120,6 +191,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     } else {
       // SI NO HA SIDO SELECCIONADA NINGUNA RESPUESTA
+
       alert("Tienes que elegir alguna respuesta");
     }
     if (questionIndex === questionsData.length) {
@@ -140,12 +212,25 @@ function showQuestion(questions, index) {
   mixedAnswers.sort(() => Math.random() - 0.5);
 
   let arrTemplateString = `
+=======
+      alert("Tienes que eleguir alguna respuesta");
+    }
+  });
+
+  // MOSTRAR LAS PREGUNTAS Y RESPUESTAS
+  function showQuestion(questions, index) {
+    let section = document.getElementById("question_quiz");
+    let question = questions[index];
+
+    let arrTemplateString = `
+
     <h1 class="pregunta">${question.question}</h1>
     <label><input type="radio" value="${mixedAnswers[0]}" name="res" required>${mixedAnswers[0]}</label>
     <label><input type="radio" value="${mixedAnswers[1]}" name="res" required>${mixedAnswers[1]}</label>
     <label><input type="radio" value="${mixedAnswers[2]}" name="res" required>${mixedAnswers[2]}</label>
     <label><input type="radio" value="${mixedAnswers[3]}" name="res" required>${mixedAnswers[3]}</label>
   `;
+
   section.innerHTML = arrTemplateString;
 }
 
@@ -218,7 +303,6 @@ function answersFromLocalStorage() {
 // *********    FALTA VERIFICAR LAS RESPUESTAS ************ //
 
 // ***** CONSEGUIR DEJAR SELECIONADA UNA RESPUESTA CON EL COLOR ****** //
-
 
 // FUNCIONALIDAD LOGIN
 
@@ -341,6 +425,7 @@ const signInUser = (email, password) => {
 //   signInUser(email, pass);
 // });
 
+
 // firebase.auth().onAuthStateChanged(function (user) {
 //   if (user) {
 //     console.log(`Está en el sistema:${user.email} ${user.uid}`);
@@ -348,3 +433,13 @@ const signInUser = (email, password) => {
 //     console.log("No hay usuarios en el sistema");
 //   }
 // });
+firebase.auth().onAuthStateChanged(function (user) {
+  if (user) {
+    console.log(`Está en el sistema:${user.email} ${user.uid}`);
+  } else {
+    console.log("No hay usuarios en el sistema");
+  }
+});
+
+
+
