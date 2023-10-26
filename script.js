@@ -1,10 +1,10 @@
 const firebaseConfig = {
-  apiKey: "AIzaSyDlsqX9gEU6ToguhB0yuc1kKTtU93kcBMA",
-  authDomain: "quizii-84a42.firebaseapp.com",
-  projectId: "quizii-84a42",
-  storageBucket: "quizii-84a42.appspot.com",
-  messagingSenderId: "201517071704",
-  appId: "1:201517071704:web:f18386349818ced992f92d",
+  apiKey: "AIzaSyCYgfJlrkt-04--f1mUoLOM52cmV6_bRME",
+  authDomain: "quiz-cacda.firebaseapp.com",
+  projectId: "quiz-cacda",
+  storageBucket: "quiz-cacda.appspot.com",
+  messagingSenderId: "800720927295",
+  appId: "1:800720927295:web:20a8f9610fd5c465cf168a"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -51,8 +51,48 @@ document.addEventListener("DOMContentLoaded", function () {
     nextButton.style.display = "block";
   });
 
+  function getDataFromFirestore() {
+    const datos = [];
+  
+    db.collection("quiz")
+      .orderBy("result", "desc")
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          datos.push({
+            user: data.user,
+            result: data.result,
+          });
+        });
+        return datos;
+      })
+      .catch((error) => {
+        console.log("Error al obtener los datos de Firestore: ", error);
+      });
+  }
+  function pintarRanking() {
+    const datos = getDataFromFirestore();
+    datos.map((data) => data.user)
+    datos.map((data) => data.result)
+  }
+
   function processUserDataAndShowChart() {
-    // ... (código para procesar usuarios y mostrar la gráfica)
+    const datos = getDataFromFirestore();
+  
+    const data = {
+      labels: [datos.map((data) => data.user)],
+      series: [datos.map((data) => data.result)]
+    };
+  
+    const options = {
+      high: 10,
+      low: 0,
+      width: "50%",
+      height: "150px"
+    };
+  
+    new Chartist.Bar("#chart2", data, options);
   }
 
   nextButton.addEventListener("click", async function () {
@@ -82,21 +122,21 @@ document.addEventListener("DOMContentLoaded", function () {
         section.innerHTML = "¡HAS TERMINADO LAS PREGUNTAS DE QUIZZYWIZ!";
         nextButton.style.display = "none";
 
-        if (questionIndex === totalQuestions) {
-          const percentage = (score / totalQuestions) * 100;
-          const section1 = document.getElementById("results");
-          section1.innerHTML = `Has acertado el ${percentage}% de las preguntas`;
+        const percentage = (score / totalQuestions) * 100;
+        const section1 = document.getElementById("results");
+        section1.innerHTML = `Has acertado el ${percentage}% de las preguntas`;
 
-          const user = firebase.auth().currentUser;
+        const user = firebase.auth().currentUser;
 
-          const game = {
-            user: user.l,
-            date: new Date(),
-            result: correctResponses.length,
-          };
-          await saveResults(game);
-        }
+        const game = {
+          user: user.l,
+          date: new Date(),
+          result: correctResponses.length,
+        };
+        await saveResults(game);
+        
         processUserDataAndShowChart();
+        pintarRanking();
       }
     } else {
       alert("Tienes que elegir alguna respuesta");
@@ -133,7 +173,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const saveResults = async (result) => {
     console.log("Valores que se van a guardar en Firestore:", result);
     await db
-      .collection("quizII")
+      .collection("quiz")
       .add(result)
       .then((docRef) => console.log("Document written with ID: ", docRef.id))
       .catch((error) => console.error("Error adding document: ", error));
@@ -141,14 +181,14 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 const createUser = (user) => {
-  db.collection("quizII")
+  db.collection("quiz")
     .add(user)
     .then((docRef) => console.log("Document written with ID: ", docRef.id))
     .catch((error) => console.error("Error adding document: ", error));
 };
 
 const readAllUsers = (born) => {
-  db.collection("quizII")
+  db.collection("quiz")
     .where("first", "==", born)
     .get(user)
     .then((querySnapshot) => {
@@ -264,10 +304,4 @@ document.getElementById("form2").addEventListener("submit", function (event) {
   signInUser(email, pass);
 });
 
-firebase.auth().onAuthStateChanged(function (user) {
-  if (user) {
-    console.log(`Está en el sistema:${user.email} ${user.uid}`);
-  } else {
-    console.log("No hay usuarios en el sistema");
-  }
-});
+
